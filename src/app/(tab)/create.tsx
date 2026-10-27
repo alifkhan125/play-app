@@ -208,7 +208,7 @@ export default function CreateScreen() {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images', 'videos'],
-        allowsEditing: true,
+        allowsEditing: false,
         quality: 0.7,
         videoMaxDuration: 60,
       });

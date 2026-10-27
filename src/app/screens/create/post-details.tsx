@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, Pressable, TextInput, ScrollView, Switch, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, TextInput, ScrollView, Switch, ActivityIndicator, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -142,7 +142,7 @@ export default function PostDetailsScreen() {
       setIsFetchingLocation(true);
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        alert('Permission to access location was denied');
+        Alert.alert('Location Permission', 'Permission to access location was denied');
         setIsFetchingLocation(false);
         return;
       }
@@ -165,7 +165,7 @@ export default function PostDetailsScreen() {
       setIsEditingLocation(false);
     } catch (e) {
       console.log(e);
-      alert('Error fetching location. Make sure GPS is enabled.');
+      Alert.alert('Location Error', 'Error fetching location. Make sure GPS is enabled.');
     } finally {
       setIsFetchingLocation(false);
     }
@@ -294,7 +294,7 @@ export default function PostDetailsScreen() {
     } catch (error: any) {
       console.log('Publish reel error:', error);
       const message = handleApiError(error, 'Could not upload this reel.');
-      alert(message.toLowerCase().includes('access token') ? 'Please login again, then upload your reel.' : message);
+      Alert.alert('Upload Failed', message.toLowerCase().includes('access token') ? 'Please login again, then upload your reel.' : message);
     } finally {
       isPostingRef.current = false;
       setIsPosting(false);
