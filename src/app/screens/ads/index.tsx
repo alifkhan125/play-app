@@ -251,8 +251,7 @@ export default function AdsManagementFormScreen() {
             ) : (
               <View className="gap-3">
                 {packages.map((pkg) => {
-                  const isSelected =
-                    selectedPackageId === pkg.id || (days === pkg.days && boost === pkg.priceUsd);
+                  const isSelected = selectedPackageId === pkg.id;
 
                   return (
                     <Pressable

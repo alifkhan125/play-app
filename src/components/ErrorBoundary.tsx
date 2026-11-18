@@ -41,7 +41,14 @@ export class ErrorBoundary extends Component<Props, State> {
             className="bg-[#98FF2F] px-8 py-3 rounded-full"
             onPress={() => {
               this.setState({ hasError: false, error: null });
-              router.replace('/');
+              try {
+                if (router.canGoBack()) {
+                  router.dismissAll();
+                }
+                router.replace('/');
+              } catch (e) {
+                console.warn('Failed to navigate from ErrorBoundary:', e);
+              }
             }}
           >
             <Text className="text-black font-inter-bold text-base">Return to Home</Text>

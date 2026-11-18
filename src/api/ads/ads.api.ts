@@ -270,8 +270,14 @@ export const getFeedAds = async (limit: number = 3) => {
   return response.data.data;
 };
 
-export const recordAdImpression = async (adId: string) => {
-  const response = await apiClient.post<{ data: { recorded: boolean } }>(`/ads/${adId}/impressions`);
+export const recordAdImpression = async (
+  adId: string,
+  context?: { reelId?: string; creatorId?: string },
+) => {
+  const response = await apiClient.post<{ data: { recorded: boolean } }>(
+    `/ads/${adId}/impressions`,
+    context || {},
+  );
   return response.data.data;
 };
 

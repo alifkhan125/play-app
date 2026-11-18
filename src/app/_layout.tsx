@@ -1,3 +1,4 @@
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -10,6 +11,7 @@ import {
 } from "@expo-google-fonts/inter";
 import { Toaster } from 'sonner-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import "../../global.css";
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -18,6 +20,12 @@ import { useAppStore } from "../store";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useRegisterPushNotifications } from "../hooks/notifications/useRegisterPushNotifications";
 import { MaintenanceGate } from "../components/settings/MaintenanceGate";
+
+// Disable Reanimated strict mode warning
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,6 +44,14 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+function AppContent() {
+  return (
+    <MaintenanceGate>
+      <Stack screenOptions={{ headerShown: false }} />
+    </MaintenanceGate>
+  );
+}
 
 export default function RootLayout() {
   const hasHydrated = useAppStore((state) => state.hasHydrated);
@@ -73,19 +89,19 @@ export default function RootLayout() {
   }
 
   return (
-    <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <QueryClientProvider client={queryClient}>
-          <StripeProvider
-            publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_not_configured'}
-            merchantIdentifier={process.env.EXPO_PUBLIC_APPLE_MERCHANT_ID || 'merchant.com.anonymous.play'}
-          >
-            <StatusBar style="light" />
-            <MaintenanceGate />
-            <Toaster />
-          </StripeProvider>
-        </QueryClientProvider>
-      </GestureHandlerRootView>
-    </ErrorBoundary>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <StripeProvider
+          publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_not_configured'}
+          merchantIdentifier={process.env.EXPO_PUBLIC_APPLE_MERCHANT_ID || 'merchant.com.anonymous.play'}
+        >
+          <StatusBar style="light" />
+          <ErrorBoundary>
+            <AppContent />
+          </ErrorBoundary>
+          <Toaster />
+        </StripeProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }

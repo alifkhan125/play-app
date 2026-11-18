@@ -1,10 +1,11 @@
+import React from 'react';
 import { Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { usePublicPlatformSettingsQuery } from '../../api/settings';
 
-export function MaintenanceGate() {
+export function MaintenanceGate({ children }: { children?: React.ReactNode }) {
   const query = usePublicPlatformSettingsQuery();
   const settings = query.data;
 
@@ -22,5 +23,5 @@ export function MaintenanceGate() {
     );
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return children ? <>{children}</> : <Stack screenOptions={{ headerShown: false }} />;
 }
